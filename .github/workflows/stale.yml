@@ -14,6 +14,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y <necessary-dependencies>
+
       - name: Random Delay
         run: |
           # 隨機延遲 0 到 60 秒
@@ -48,10 +53,14 @@ jobs:
           RANDOM_TYPE=${TYPES[$RANDOM % ${#TYPES[@]}]}
           RANDOM_SCOPE=${SCOPES[$RANDOM % ${#SCOPES[@]}]}
           RANDOM_ACTION=${ACTIONS[$RANDOM % ${#ACTIONS[@]}]}
-          RANDOM_ISSUE=${ISSUES[$RANDOM % ${#ISSUES[@]}]}
+          RANDOM_ISSUE=${ISSUES[$RANDOM % 10000]}
 
           TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
           echo "RANDOM_MESSAGE2=$RANDOM_TYPE($RANDOM_SCOPE): $RANDOM_ACTION - $TIMESTAMP\n\n調整項目：\n1. 詳細描述調整內容。\n2. 說明原因與效果。\n\n$RANDOM_ISSUE" >> $GITHUB_ENV
+
+      - name: Run Tests
+        run: |
+          <command-to-run-tests>
 
       - name: GitHub activity
         run: |
@@ -87,7 +96,7 @@ jobs:
         if: ${{ github.event.inputs.release != 'none' }}
         uses: ncipollo/release-action@v1.13.0
         with:
-          artifacts: "**/*.txt"
+          artifacts: "**/*.txt, **/*.log, **/*.json"
           prerelease: ${{ github.event.inputs.release == 'pre-release' }}
           makeLatest: ${{ github.event.inputs.release == 'release' }}
           allowUpdates: "true"
