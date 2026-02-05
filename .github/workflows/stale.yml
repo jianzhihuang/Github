@@ -1,5 +1,5 @@
 name: GitHub activity data as a measure of developer activity
-
+# 隨機延遲 0 到 60 秒
 on:
   workflow_dispatch:
   schedule:
